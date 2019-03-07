@@ -12,16 +12,16 @@
 */
 #include "bst.h"
 #include <stdlib.h>
+
 struct Node{
-    int key;
+    int value;
     Bst left;
     Bst right;
 };
 
 Bst new_bst()
 {
-    Bst new_bst =  (Bst) malloc(sizeof(struct Node));
-
+    return 0;
 
 }
 
@@ -43,7 +43,12 @@ int get_depth(Bst bst)
 */
 void add(Bst* start_node, int value)
 {
-    
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->value = value;
+    newNode->left = 0;
+    newNode->right = 0;
+    *start_node = newNode;
+
 }
 
 /**
@@ -59,7 +64,8 @@ int root_value(Bst bst)
 */
 Bst left_subtree(Bst root)
 {
-    return 0;
+    if (root == 0) return 0;
+    return root->left;
 
 }
 
@@ -68,7 +74,8 @@ Bst left_subtree(Bst root)
 */
 Bst right_subtree(Bst root)
 {
-    return 0;
+    if (root == 0) return 0;
+    return root->left;
 
 }
 
