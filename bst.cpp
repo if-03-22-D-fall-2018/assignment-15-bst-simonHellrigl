@@ -10,24 +10,30 @@
  * <your description here>
  *-----------------------------------------------------------------------------
 */
+#include "general.h"
 #include "bst.h"
 #include <stdlib.h>
 
 struct Node{
     int value;
-    Bst left;
-    Bst right;
+    Node* left;
+    Node* right;
 };
 
 Bst new_bst()
 {
-    return 0;
+  Bst bst = 0;
+  return bst;
 
 }
 
 void delete_bst(Bst bst)
 {
-
+  if(bst != 0){
+      delete_bst(bst->left);
+      delete_bst(bst->right);
+      sfree(bst);
+    }
 }
 
 /**
@@ -35,19 +41,68 @@ void delete_bst(Bst bst)
 */
 int get_depth(Bst bst)
 {
+  if(bst == 0)
+{
     return 0;
+}
+else
+{
+  int left = get_depth(bst->left);
+  int right = get_depth(bst->right);
+
+  if(left <= right)
+  {
+    return right+1;
+  }
+  else
+  {
+    return left+1;
+  }
+}
+
+
+
+
+
+
+
 }
 
 /**
 *** Adds a value to the BST
 */
-void add(Bst* start_node, int value)
+void add(Bst* bst, int value)
 {
     struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
     newNode->value = value;
     newNode->left = 0;
     newNode->right = 0;
-    *start_node = newNode;
+
+
+    if (*bst==0)
+    {
+      *bst=newNode;
+    }
+    else if(value<=(*bst)->value)
+    {
+      if((*bst)->left == 0)
+      {
+        (*bst)->left=newNode;
+      }
+      else
+      {
+        add(&(*bst)->left, value);
+      }
+    }
+
+    else if(value>(*bst)->value)
+  {
+    if((*bst)->right == 0){
+      (*bst)->right=newNode;
+    }else{
+      add(&(*bst)->right, value);
+    }
+  }
 
 }
 
@@ -56,7 +111,11 @@ void add(Bst* start_node, int value)
 */
 int root_value(Bst bst)
 {
+  if (bst == 0)
+  {
     return 0;
+  }
+  return bst->value;
 }
 
 /**
