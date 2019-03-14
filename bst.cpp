@@ -10,30 +10,33 @@
  * <your description here>
  *-----------------------------------------------------------------------------
 */
-#include "general.h"
 #include "bst.h"
 #include <stdlib.h>
+#include "general.h"
+
+Node* new_node(int value);
+
+
 
 struct Node{
     int value;
-    Node* left;
-    Node* right;
+    Bst left;
+    Bst right;
 };
 
 Bst new_bst()
 {
-  Bst bst = 0;
-  return bst;
+    return 0;
 
 }
 
 void delete_bst(Bst bst)
 {
-  if(bst != 0){
-      delete_bst(bst->left);
-      delete_bst(bst->right);
-      sfree(bst);
-    }
+  if (bst == 0) return;
+  delete_bst(bst->left);
+  delete_bst(bst->right);
+  sfree(bst);
+
 }
 
 /**
@@ -41,31 +44,24 @@ void delete_bst(Bst bst)
 */
 int get_depth(Bst bst)
 {
-  if(bst == 0)
-{
-    return 0;
-}
-else
-{
-  int left = get_depth(bst->left);
-  int right = get_depth(bst->right);
+     if(bst == 0)
+     {
+         return 0;
+     }
+     else
+     {
+       int leftNext = get_depth(bst->left);
+       int rightNext = get_depth(bst->right);
 
-  if(left <= right)
-  {
-    return right+1;
-  }
-  else
-  {
-    return left+1;
-  }
-}
-
-
-
-
-
-
-
+       if(leftNext <= rightNext)
+       {
+         return rightNext+1;
+       }
+       else
+       {
+         return leftNext+1;
+       }
+     }
 }
 
 /**
@@ -73,49 +69,70 @@ else
 */
 void add(Bst* bst, int value)
 {
-    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
-    newNode->value = value;
-    newNode->left = 0;
-    newNode->right = 0;
-
-
-    if (*bst==0)
-    {
-      *bst=newNode;
-    }
-    else if(value<=(*bst)->value)
-    {
-      if((*bst)->left == 0)
+      if ((*bst) == 0)
       {
-        (*bst)->left=newNode;
+        Node* newnode = new_node(value);
+        (*bst) = newnode;
+        return;
       }
-      else
+
+
+      if (*bst != 0)
       {
-        add(&(*bst)->left, value);
+          if (value <= (*bst)->value)
+          {
+            if ((*bst)->left == 0)
+            {
+              Node* newnode = new_node(value);
+              (*bst)->left = newnode;
+            }
+            else
+            {
+              Node* bst_to_add = (*bst)->left;
+              add(&bst_to_add, value);
+            }
+          }
+          else
+          {
+            if ((*bst)->right == 0)
+            {
+              Node* newnode = new_node(value);
+              (*bst)->right = newnode;
+            }
+            else
+            {
+              Node* bst_to_add = (*bst)->right;
+              add(&bst_to_add, value);
+            }
+        }
       }
-    }
-
-    else if(value>(*bst)->value)
-  {
-    if((*bst)->right == 0){
-      (*bst)->right=newNode;
-    }else{
-      add(&(*bst)->right, value);
-    }
-  }
-
 }
+
+
+Node* new_node(int value)
+{
+  Node* newnode = (struct Node*)malloc(sizeof(struct Node));
+  newnode->value = value;
+  newnode->left = 0;
+  newnode->right = 0;
+  return newnode;
+}
+
+
 
 /**
 *** @return The value of the root element of the BST
 */
 int root_value(Bst bst)
 {
-  if (bst == 0)
-  {
-    return 0;
-  }
-  return bst->value;
+    if (bst == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return bst->value;
+    }
 }
 
 /**
@@ -134,7 +151,7 @@ Bst left_subtree(Bst root)
 Bst right_subtree(Bst root)
 {
     if (root == 0) return 0;
-    return root->left;
+    return root->right;
 
 }
 
@@ -148,7 +165,21 @@ Bst right_subtree(Bst root)
 */
 int traverse_pre_order(Bst bst, int *elements, int start)
 {
-    return 0;
+    int temp = start;
+
+    if(bst != 0)
+    {
+        elements[start] = bst->value;
+        start++;
+        start = traverse_pre_order(bst->left, elements, start);
+        start = traverse_pre_order(bst->right, elements, start);
+        return start;
+    }
+    else
+    {
+        return temp;
+    }
+
 }
 
 /**
@@ -161,7 +192,21 @@ int traverse_pre_order(Bst bst, int *elements, int start)
 */
 int traverse_in_order(Bst bst, int *elements, int start)
 {
-    return 0;
+    int temp = start;
+    if(bst != 0)
+    {
+        start = traverse_in_order(bst->left, elements, start);
+        elements[start] = bst->value;
+        start++;
+        start = traverse_in_order(bst->right, elements, start);
+        return start;
+    }
+    else
+    {
+        return temp;
+    }
+
+
 }
 
 /**
