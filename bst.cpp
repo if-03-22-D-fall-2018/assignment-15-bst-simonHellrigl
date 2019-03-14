@@ -193,20 +193,19 @@ int traverse_pre_order(Bst bst, int *elements, int start)
 int traverse_in_order(Bst bst, int *elements, int start)
 {
     int temp = start;
-    if(bst != 0)
-    {
-        start = traverse_in_order(bst->left, elements, start);
-        elements[start] = bst->value;
-        start++;
-        start = traverse_in_order(bst->right, elements, start);
-        return start;
-    }
-    else
-    {
-        return temp;
-    }
 
-
+      if(bst != 0)
+      {
+          start = traverse_in_order(bst->left, elements, start);
+          elements[start] = bst->value;
+          start++;
+          start = traverse_in_order(bst->right, elements, start);
+          return start;
+      }
+      else
+      {
+          return temp;
+      }
 }
 
 /**
@@ -219,7 +218,38 @@ int traverse_in_order(Bst bst, int *elements, int start)
 */
 int traverse_post_order(Bst bst, int *elements, int start)
 {
-    return 0;
+    int temp = start;
+
+      if(bst != 0)
+      {
+          start = traverse_post_order(bst->left, elements, start);
+          start = traverse_post_order(bst->right, elements, start);
+          elements[start] = bst->value;
+          start++;
+
+          return start;
+      }
+      else
+      {
+          return temp;
+      }
+}
+
+
+
+
+
+
+bool is_equal(int* depth1, int* depth2, int length)
+{
+  for (int i = 0; i < length+1; i++)
+  {
+    if (depth1[i] != depth2[i])
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -230,9 +260,27 @@ int traverse_post_order(Bst bst, int *elements, int start)
 */
 bool are_equal(Bst bst1, Bst bst2)
 {
-    return true;
+
+    if (bst1 == 0 && bst1 == 0)
+    {
+         return true;
+    }
+    if (get_depth(bst1) == get_depth(bst2))
+    {
+      int *depth1 = new int[get_depth(bst1)];
+      traverse_pre_order(bst1,depth1, 0);
+      int *depth2 = new int[get_depth(bst2)];
+      traverse_pre_order(bst2,depth2, 0);
+      return (bst1->value == bst2->value && is_equal(depth1,depth2,get_depth(bst1)));
+    }
+    return false;
+
 
 }
+
+
+
+
 
 /**
 *** Calculates the longest branch in the tree. If two branches are equally long
