@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "general.h"
 
-Node* new_node(int value);
+Node* create_new_node(int value);
 
 
 
@@ -44,23 +44,23 @@ void delete_bst(Bst bst)
 */
 int get_depth(Bst bst)
 {
-     if(bst == 0)
+     if(bst != 0)
      {
-         return 0;
+         int leftNext = get_depth(bst->left);
+         int rightNext = get_depth(bst->right);
+
+         if(leftNext <= rightNext)
+         {
+           return rightNext+1;
+         }
+         else
+         {
+           return leftNext+1;
+         }
      }
      else
      {
-       int leftNext = get_depth(bst->left);
-       int rightNext = get_depth(bst->right);
-
-       if(leftNext <= rightNext)
-       {
-         return rightNext+1;
-       }
-       else
-       {
-         return leftNext+1;
-       }
+        return 0;
      }
 }
 
@@ -71,7 +71,7 @@ void add(Bst* bst, int value)
 {
       if ((*bst) == 0)
       {
-        Node* newnode = new_node(value);
+        Node* newnode = create_new_node(value);
         (*bst) = newnode;
         return;
       }
@@ -83,33 +83,33 @@ void add(Bst* bst, int value)
           {
             if ((*bst)->left == 0)
             {
-              Node* newnode = new_node(value);
+              Node* newnode = create_new_node(value);
               (*bst)->left = newnode;
             }
             else
             {
-              Node* bst_to_add = (*bst)->left;
-              add(&bst_to_add, value);
+              Node* toAdd = (*bst)->left;
+              add(&toAdd, value);
             }
           }
           else
           {
             if ((*bst)->right == 0)
             {
-              Node* newnode = new_node(value);
+              Node* newnode = create_new_node(value);
               (*bst)->right = newnode;
             }
             else
             {
-              Node* bst_to_add = (*bst)->right;
-              add(&bst_to_add, value);
+              Node* toAdd = (*bst)->right;
+              add(&toAdd, value);
             }
         }
       }
 }
 
 
-Node* new_node(int value)
+Node* create_new_node(int value)
 {
   Node* newnode = (struct Node*)malloc(sizeof(struct Node));
   newnode->value = value;
@@ -268,9 +268,9 @@ bool are_equal(Bst bst1, Bst bst2)
     if (get_depth(bst1) == get_depth(bst2))
     {
       int *depth1 = new int[get_depth(bst1)];
-      traverse_pre_order(bst1,depth1, 0);
+      traverse_in_order(bst1,depth1, 0);
       int *depth2 = new int[get_depth(bst2)];
-      traverse_pre_order(bst2,depth2, 0);
+      traverse_in_order(bst2,depth2, 0);
       return (bst1->value == bst2->value && is_equal(depth1,depth2,get_depth(bst1)));
     }
     return false;
