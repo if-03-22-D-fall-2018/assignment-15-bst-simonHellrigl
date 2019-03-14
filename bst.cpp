@@ -267,10 +267,12 @@ bool are_equal(Bst bst1, Bst bst2)
     }
     if (get_depth(bst1) == get_depth(bst2))
     {
+
       int *depth1 = new int[get_depth(bst1)];
       traverse_in_order(bst1,depth1, 0);
       int *depth2 = new int[get_depth(bst2)];
       traverse_in_order(bst2,depth2, 0);
+      
       return (bst1->value == bst2->value && is_equal(depth1,depth2,get_depth(bst1)));
     }
     return false;
