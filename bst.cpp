@@ -32,10 +32,14 @@ Bst new_bst()
 
 void delete_bst(Bst bst)
 {
-  if (bst == 0) return;
+  if (bst == 0)
+  {
+    return;
+  }
   delete_bst(bst->left);
   delete_bst(bst->right);
   sfree(bst);
+
 
 }
 
@@ -50,7 +54,7 @@ int get_depth(Bst bst)
          int rightNext = get_depth(bst->right);
 
          if(leftNext <= rightNext)
-         {
+         {/* code */
            return rightNext+1;
          }
          else
@@ -69,53 +73,53 @@ int get_depth(Bst bst)
 */
 void add(Bst* bst, int value)
 {
-      if ((*bst) == 0)
-      {
-        Node* newnode = create_new_node(value);
-        (*bst) = newnode;
-        return;
-      }
+  if ((*bst) == 0)
+  {
+      Node* newNode = create_new_node(value);
+      (*bst) = newNode;
+      return;
+  }
+  if (value <= (*bst)->value)
+  {
+    if ((*bst)->left == 0)
+    {
+      Node* newNode = create_new_node(value);
+      (*bst)->left = newNode;
+    }
+    else
+    {
+      Node* toAdd = (*bst)->left;
+      add(&toAdd, value);
+    }
+  }
+  else
+  {
+    if ((*bst)->right == 0)
+    {
+      Node* newNode = create_new_node(value);
+      (*bst)->right = newNode;
+    }
+    else
+    {
+      Node* toAdd = (*bst)->right;
+      add(&toAdd, value);
+    }
+
+  }
 
 
-      if (*bst != 0)
-      {
-          if (value <= (*bst)->value)
-          {
-            if ((*bst)->left == 0)
-            {
-              Node* newnode = create_new_node(value);
-              (*bst)->left = newnode;
-            }
-            else
-            {
-              Node* toAdd = (*bst)->left;
-              add(&toAdd, value);
-            }
-          }
-          else
-          {
-            if ((*bst)->right == 0)
-            {
-              Node* newnode = create_new_node(value);
-              (*bst)->right = newnode;
-            }
-            else
-            {
-              Node* toAdd = (*bst)->right;
-              add(&toAdd, value);
-            }
-        }
-      }
+
 }
 
 
 Node* create_new_node(int value)
 {
-  Node* newnode = (struct Node*)malloc(sizeof(struct Node));
-  newnode->value = value;
-  newnode->left = 0;
-  newnode->right = 0;
-  return newnode;
+  Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+  newNode->value = value;
+  newNode->right = 0;
+  newNode->left = 0;
+  return newNode;
+
 }
 
 
@@ -269,10 +273,11 @@ bool are_equal(Bst bst1, Bst bst2)
     {
 
       int *depth1 = new int[get_depth(bst1)];
+      
       traverse_in_order(bst1,depth1, 0);
       int *depth2 = new int[get_depth(bst2)];
       traverse_in_order(bst2,depth2, 0);
-      
+
       return (bst1->value == bst2->value && is_equal(depth1,depth2,get_depth(bst1)));
     }
     return false;
@@ -293,7 +298,19 @@ bool are_equal(Bst bst1, Bst bst2)
 */
 void most_left_longest_branch(Bst bst, Bst* branch)
 {
-
+  if (bst != 0)
+  {
+    if (get_depth(bst->left) >= get_depth(bst->right))
+    {
+      add(branch, bst->value);
+      most_left_longest_branch(bst->left, branch);
+    }
+    else
+    {
+      add(branch, bst->value);
+      most_left_longest_branch(bst->right, branch);
+    }
+  }
 }
 
 /**
@@ -303,5 +320,10 @@ void most_left_longest_branch(Bst bst, Bst* branch)
 */
 int get_number_of_subtrees(Bst bst)
 {
- return 0;
+   if (bst != 0)
+   {
+     int* elements = new int [get_depth(bst)];
+     return traverse_post_order(bst, elements, 0) -1;
+   }
+   return -1;
 }
