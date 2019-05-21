@@ -75,38 +75,24 @@ void add(Bst* bst, int value)
 {
   if ((*bst) == 0)
   {
-      Node* newNode = create_new_node(value);
-      (*bst) = newNode;
-      return;
-  }
-  if (value <= (*bst)->value)
-  {
-    if ((*bst)->left == 0)
-    {
-      Node* newNode = create_new_node(value);
-      (*bst)->left = newNode;
-    }
-    else
-    {
-      Node* toAdd = (*bst)->left;
-      add(&toAdd, value);
-    }
-  }
-  else
-  {
-    if ((*bst)->right == 0)
-    {
-      Node* newNode = create_new_node(value);
-      (*bst)->right = newNode;
-    }
-    else
-    {
-      Node* toAdd = (*bst)->right;
-      add(&toAdd, value);
-    }
+    (*bst)=create_new_node(value);
+    //return true;
 
   }
+  if ((*bst)->value == value)
+  {
+    return;
+  }
+  if ((*bst)->value > value)
+  {
+      add(&(*bst)->left, value);
 
+  }
+  if ((*bst)->value < value)
+  {
+
+      add(&(*bst)->right, value);
+  }
 
 
 }
@@ -273,10 +259,10 @@ bool are_equal(Bst bst1, Bst bst2)
     {
 
       int *depth1 = new int[get_depth(bst1)];
-      
-      traverse_in_order(bst1,depth1, 0);
+
+      traverse_post_order(bst1,depth1, 0);
       int *depth2 = new int[get_depth(bst2)];
-      traverse_in_order(bst2,depth2, 0);
+      traverse_post_order(bst2,depth2, 0);
 
       return (bst1->value == bst2->value && is_equal(depth1,depth2,get_depth(bst1)));
     }
